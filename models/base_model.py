@@ -40,7 +40,7 @@ class BaseModel:
 
     def __str__(self):
         """Returns a string representation of the instance"""
-        return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
+        return f"[{type(self).__name__}] ({self.id}) {self.to_dict()}"
         # cls = (str(type(self)).split('.')[-1]).split('\'')[0]
         # return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
 
@@ -58,7 +58,8 @@ class BaseModel:
         dictionary['__class__'] = type(self).__name__
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
-        dictionary.pop("_sa_instance_state", None)
+        del dictionary["_sa_instance_state"]
+        # dictionary.pop("_sa_instance_state", None)
         return dictionary
 
     def delete(self):

@@ -68,23 +68,22 @@ class Place(BaseModel, Base):
                         rev_list.append(rv)
             return rev_list
 
-        if os.getenv('HBNB_TYPE_STORAGE') != "db":
-            @property
-            def amenities(self):
-                """returns the list of `Amenity` instances based on the attribute
-                `amenity_ids` that contains all `Amenity.id` linked to the `Place`
-                """
-                from models import storage
-                amenity_obj = []
-                all_amenities = storage.all(Amentiy)
-                for amenity_id in amenity_ids:
-                    for k,v in all_amenities.items():
-                        if amenity_id in k:
-                            amenity_obj.append(v)
-                return amenity_obj
+        @property
+        def amenities(self):
+            """returns the list of `Amenity` instances based on the attribute
+            `amenity_ids` that contains all `Amenity.id` linked to the `Place`
+            """
+            from models import storage
+            amenity_obj = []
+            all_amenities = storage.all(Amenity)
+            for amenity_id in self.amenity_ids:
+                for k,v in all_amenities.items():
+                    if amenity_id in k:
+                        amenity_obj.append(v)
+            return amenity_obj
 
-            @amenities.setter
-            def amenities(self, amenity):
-                """setter"""
-                if isinstance(amenity, Amenity):
-                    self.amenity_ids.append(amenity.id)
+        @amenities.setter
+        def amenities(self, amenity):
+            """setter"""
+            if isinstance(amenity, Amenity):
+                self.amenity_ids.append(amenity.id)
