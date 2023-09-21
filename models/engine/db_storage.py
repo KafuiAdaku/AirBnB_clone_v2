@@ -49,7 +49,7 @@ class DBStorage:
         # from models import storage
         obj_dict = {}
         if cls is not None and cls in self.classes:
-            all_obj = self.__session.query(cls).all
+            all_obj = self.__session.query(self.classes[cls]).all
             for obj in all_obj:
                 cls_name = type(obj).__name__
                 key = f"{cls_name}.{obj.id}"

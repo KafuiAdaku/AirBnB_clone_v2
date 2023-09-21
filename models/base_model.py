@@ -40,8 +40,9 @@ class BaseModel:
 
     def __str__(self):
         """Returns a string representation of the instance"""
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
+        # cls = (str(type(self)).split('.')[-1]).split('\'')[0]
+        # return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
@@ -54,14 +55,13 @@ class BaseModel:
         """Convert instance into dict format"""
         dictionary = {}
         dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
+        dictionary['__class__'] = type(self).__name__
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
-        return {k:v for k,v in dictionary if k != "_sa_instance_state"}
+        dictionary.pop("_sa_instance_state", None)
+        return dictionary
 
     def delete(self):
         """delete the current instance from the storage"""
         # from models import storage
         storage.delete(self)
-        storage.save()

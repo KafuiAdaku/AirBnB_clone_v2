@@ -12,11 +12,12 @@ storage_type = os.getenv('HBNB_TYPE_STORAGE')
 class User(BaseModel, Base):
     """This class defines a user by various attributes"""
     __tablename__ = "users"
+
     if storage_type == "db":
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
-        firstname = Column(String(128), nullable=False)
-        lastname = Column(String(128), nullable=False)
+        first_name = Column(String(128), nullable=True)
+        last_name = Column(String(128), nullable=True)
         places = relationship("Place", backref="user", cascade="all, delete-orphan")
         reviews = relationship("Review", backref="user", cascade="all, delete-orphan")
     else:
