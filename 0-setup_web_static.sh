@@ -48,6 +48,6 @@ ln -sf "/data/web_static/releases/test" "/data/web_static/current"
 # Assign ownership
 sudo chown -R ubuntu:ubuntu "/data/"
 
-sudo sed -i '/listen 80 default_server;/a \\nlocation /static {\\n\\talias /data/web_static/current/;}' /etc/nginx/sites-available/default
+sudo sed -i '/listen 80 default_server;/a \\nlocation /hbnb_static {\\n\\talias /data/web_static/current/;}' /etc/nginx/sites-available/default
 
 sudo service nginx restart
