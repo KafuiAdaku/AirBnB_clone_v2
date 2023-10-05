@@ -12,24 +12,30 @@
 # Give ownership of the `/data/` folder to the ubuntu user AND group (you can assume this user and group exist).
 #	This should be recursive; everything inside should be created/owned by this user/group.
 
-directory_path1="/data/web_static/releases/
-/data/web_static/shared/
-/data/web_static/releases/test/"
+directory_paths=(
+"/data/web_static/releases/"
+"/data/web_static/shared/"
+"/data/web_static/releases/test/"
+)
 file_path="/data/web_static/releases/test/index.html"
 program="nginx"
 
 # check if nginx is installed
-if [ ! "$(which $program)" ]
+if  ! command -v "$program" &> /dev/null
 then
     sudo apt-get update
     sudo apt-get install "$program" -y
+    sudo ufw allow "Nginx HTTP"
 fi
 
 # create directories
-if  [ ! -d "$directory_path" ]
-then
-    sudo mkdir -p "$directory_path"
-fi
+for directory_path in "${directory_paths[@]}"
+do
+    if  [ ! -d "$directory_path" ]
+    then
+        sudo mkdir -p "$directory_path"
+    fi
+done
 
 # create file "data/web_static/releases/test/index.html"
 if [ ! -e "$file_path" ]
@@ -40,7 +46,11 @@ echo "Lorem ipsum dolor sit amet, consectetur adipiscing elit." | sudo tee "$fil
 
 #symbolic link of `/data/web_static/current` to `/data/web_static/releases/test/`
 # deletes symbolic link if it already exits and recreates link
-ln -sf "/data/web_static/current" "/data/web_static/releases/test"
+ln -sf "/data/web_static/releases/test" "/data/web_static/current"
 
 # Assign ownership
 sudo chown -R ubuntu:ubuntu "/data/"
+
+sudo sed -i '/listen 80 default_server;/a \\nlocation /static {\\n\\talias /data/web_static/current/;}' /etc/nginx/sites-available/default
+
+sudo service nginx restart
