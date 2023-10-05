@@ -21,7 +21,8 @@ program="nginx"
 # check if nginx is installed
 if [ ! "$(which $program)" ]
 then
-    sudo apt-get install "$program"
+    sudo apt-get update
+    sudo apt-get install "$program" -y
 fi
 
 # create directories
@@ -38,6 +39,7 @@ fi
 echo "Lorem ipsum dolor sit amet, consectetur adipiscing elit." | sudo tee "$file_path" > /dev/null
 
 #symbolic link of `/data/web_static/current` to `/data/web_static/releases/test/`
+# deletes symbolic link if it already exits and recreates link
 ln -sf "/data/web_static/current" "/data/web_static/releases/test"
 
 # Assign ownership
