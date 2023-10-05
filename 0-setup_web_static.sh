@@ -16,6 +16,14 @@ directory_path1="/data/web_static/releases/
 /data/web_static/shared/
 /data/web_static/releases/test/"
 file_path="/data/web_static/releases/test/index.html"
+program="nginx"
+
+# check if nginx is installed
+if [ ! "$(which $program)" ]
+then
+    sudo apt-get install "$program"
+fi
+
 # create directories
 if  [ ! -d "$directory_path" ]
 then
