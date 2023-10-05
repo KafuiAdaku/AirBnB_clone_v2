@@ -21,12 +21,9 @@ file_path="/data/web_static/releases/test/index.html"
 program="nginx"
 
 # check if nginx is installed
-if  ! command -v "$program" &> /dev/null
-then
-    sudo apt-get update
-    sudo apt-get install "$program" -y
-    sudo ufw allow "Nginx HTTP"
-fi
+sudo apt-get update
+sudo apt-get install "$program" -y
+sudo ufw allow "Nginx HTTP"
 
 # create directories
 for directory_path in "${directory_paths[@]}"
