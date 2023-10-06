@@ -20,7 +20,7 @@ def do_pack():
 
     try:
         local("mkdir -p versions")
-        local("tar  -czvf {} web_static".format(archive_path))
+        local("tar  -czf {} web_static".format(archive_path))
         return archive_path
     except Exception as e:
         return None
@@ -42,11 +42,19 @@ def do_deploy(archive_path):
         run("sudo mkdir  -p /data/web_static/releases/{}".format(file_name))
 
         # uncompress archive
-        run("sudo tar -xzvf /tmp/{} -C /data/web_static/releases/{}".
+        run("sudo tar -xzf /tmp/{} -C /data/web_static/releases/{}".
             format(file_name + ".tgz", file_name))
 
         # remove archive from /tmp
         run("sudo rm /tmp/{}".format(file_name + ".tgz"))
+
+        # move contents to host's web_static
+        run("sudo cp -R /data/web_static/releases/{}/web_static/* \
+/data/web_static/releases/{}/".format(file_name, file_name))
+
+        # remove excesses
+        run("sudo rm -rf /data/web_static/releases/{}/web_static".
+            format(file_name))
 
         # remove symbolic  link
         run("sudo rm -rf /data/web_static/current")
