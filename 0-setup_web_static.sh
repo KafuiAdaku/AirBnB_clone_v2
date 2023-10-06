@@ -18,12 +18,14 @@ directory_paths=(
 "/data/web_static/releases/test/"
 )
 file_path="/data/web_static/releases/test/index.html"
-program="nginx"
 
 # check if nginx is installed
-sudo apt-get update
-sudo apt-get install "$program" -y
-sudo ufw allow "Nginx HTTP"
+if ! command -v nginx &> /dev/null
+then
+    sudo apt-get update
+    sudo apt-get install nginx -y
+    sudo ufw allow "Nginx HTTP"
+fi
 
 # create directories
 for directory_path in "${directory_paths[@]}"
@@ -39,15 +41,15 @@ if [ ! -e "$file_path" ]
 then
     sudo touch "$file_path"
 fi
-echo "Lorem ipsum dolor sit amet, consectetur adipiscing elit." | sudo tee "$file_path" > /dev/null
+sudo echo "Lorem ipsum dolor sit amet, consectetur adipiscing elit." | sudo tee "$file_path" > /dev/null
 
 #symbolic link of `/data/web_static/current` to `/data/web_static/releases/test/`
 # deletes symbolic link if it already exits and recreates link
-ln -sf "/data/web_static/releases/test" "/data/web_static/current"
+sudo ln -sf "/data/web_static/releases/test" "/data/web_static/current"
 
 # Assign ownership
 sudo chown -R ubuntu:ubuntu "/data/"
 
-sudo sed -i '/listen 80 default_server;/a \\nlocation /hbnb_static {\\n\\talias /data/web_static/current/;}' /etc/nginx/sites-available/default
+sudo sed -i "/listen 80 default_server;/a location /hbnb_static {\\n\\talias /data/web_static/current/;}" /etc/nginx/sites-available/default
 
 sudo service nginx restart
