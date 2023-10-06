@@ -1,0 +1,60 @@
+#!/usr/bin/python3
+"""a Fabric script that generates a .tgz archive from the contents of the
+web_static folder of your AirBnB Clone repo, using the function do_pack.
+"""
+from fabric.api import local, run, put, env
+from datetime import datetime
+import os.path
+
+
+env.hosts = ["100.24.205.66", "100.26.57.118"]
+env.user = ["ubuntu"]
+env.key_filename = "_~/.ssh/id_rsa"
+
+
+def do_pack():
+    """genrates a `.tgz` file"""
+    time = datetime.now().strftime("%Y%m%d%H%M%S")
+    archive_name = "web_static_{}.tgz".format(time)
+    archive_path = "versions/{}".format(archive_name)
+
+    try:
+        local("sudo mkdir -p versions")
+        local("sudo tar  -czvf {} web_static".format(archive_path))
+        return archive_path
+    except Exception as e:
+        return None
+
+
+def do_deploy(archive_path):
+    """distributes an archive to specified  web servers"""
+    if not os.path.exists(archive_path):
+        return False
+
+    try:
+        # get file name from path
+        file_name = os.path.basename(archive_path).split(".")[0]
+
+        # upload archive to the web server(s)
+        put(archive_path, "/tmp/")
+
+        # create directories
+        run("sudo mkdir  -p /data/web_static/releases/{}".format(file_name))
+
+        # uncompress archive
+        run("sudo tar -xzvf /tmp/{} -C /data/web_static/releases/{}".
+            format(file_name + ".tgx", file_name))
+
+        # remove archive from /tmp
+        run("sudo rm /tmp/{}".format(file_name + ".tgz"))
+
+        # remove symbolic  link
+        run("sudo rm -rf /data/web_static/current")
+
+        # create new symbolic link
+        run("sudo ln -sf /data/web_static/releases/{} /data/web_static/current".
+            format(file_name))
+       
+        return True
+    except Exception:
+        return False
