@@ -52,9 +52,9 @@ def do_deploy(archive_path):
         run("sudo rm -rf /data/web_static/current")
 
         # create new symbolic link
-        run("sudo ln -sf /data/web_static/releases/{}/ /data/web_static/current".
-            format(file_name))
-       
+        run("sudo ln -sf /data/web_static/releases/{}/ \
+/data/web_static/current".format(file_name))
+
         return True
     except Exception:
         return False
