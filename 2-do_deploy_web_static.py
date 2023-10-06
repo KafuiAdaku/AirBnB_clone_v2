@@ -8,8 +8,8 @@ import os.path
 
 
 env.hosts = ["100.24.205.66", "100.26.57.118"]
-env.user = ["ubuntu"]
-env.key_filename = "_~/.ssh/id_rsa"
+env.user = "ubuntu"
+env.key_filename = "~/.ssh/id_rsa"
 
 
 def do_pack():
@@ -19,8 +19,8 @@ def do_pack():
     archive_path = "versions/{}".format(archive_name)
 
     try:
-        local("sudo mkdir -p versions")
-        local("sudo tar  -czvf {} web_static".format(archive_path))
+        local("mkdir -p versions")
+        local("tar  -czvf {} web_static".format(archive_path))
         return archive_path
     except Exception as e:
         return None
@@ -43,7 +43,7 @@ def do_deploy(archive_path):
 
         # uncompress archive
         run("sudo tar -xzvf /tmp/{} -C /data/web_static/releases/{}".
-            format(file_name + ".tgx", file_name))
+            format(file_name + ".tgz", file_name))
 
         # remove archive from /tmp
         run("sudo rm /tmp/{}".format(file_name + ".tgz"))
@@ -52,7 +52,7 @@ def do_deploy(archive_path):
         run("sudo rm -rf /data/web_static/current")
 
         # create new symbolic link
-        run("sudo ln -sf /data/web_static/releases/{} /data/web_static/current".
+        run("sudo ln -sf /data/web_static/releases/{}/ /data/web_static/current".
             format(file_name))
        
         return True
