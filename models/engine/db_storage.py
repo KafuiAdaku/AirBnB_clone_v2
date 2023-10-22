@@ -83,5 +83,5 @@ class DBStorage:
         self.__session = sessions()
 
     def close(self):
-       """Closes a session"""
-       self.__session.close()
+        """Closes a session"""
+        self.__session.close()
