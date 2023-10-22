@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """a script that starts a Flask web application
-    route: :/number_template/<n>:  display a HTML page only if n is an integer:
-        `H1` tag: “Number: n” inside the tag `BODY`
+   route: /number_odd_or_even/<n>: display a HTML page only if n is an integer:
+        `H1` tag: “Number: n is even|odd” inside the tag `BODY`
     Your web application must be listening on `0.0.0.0`, port `5000`"""
 from flask import Flask, render_template
 
@@ -48,6 +48,13 @@ def number_template(n):
     """displays a HTML page only if n is an integer"""
     if isinstance(n, int):
         return render_template("5-number.html", n=n)
+
+
+@app.route('/number_odd_or_even/<int:n>', strict_slashes=False)
+def odd_or_even(n):
+    """display a HTML page only if n is an integer"""
+    if isinstance(n, int):
+        return render_template("6-number_odd_or_even.html", number=n)
 
 
 if __name__ == "__main__":
