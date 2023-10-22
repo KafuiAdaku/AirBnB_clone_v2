@@ -39,7 +39,7 @@ def py_text(text="is cool"):
 def disp_number(n):
     """A function that defines what happens when `/number/<n>` is queried"""
     if isinstance(n, int):
-        return "{} is an integer".format(n)
+        return "{} is a number".format(n)
 
 
 if __name__ == "__main__":
