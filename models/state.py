@@ -28,5 +28,12 @@ class State(BaseModel, Base):
 
             return [
                 city for city in storage.all(City).values()
-                if city.state_id == self.id
-            ]
+                if city.state_id == self.id]
+
+        @property
+        def cities(self):
+            """Returns a list of `City` objects from `storage` linked to the
+                current `State`"""
+            from models import storage
+            city_list = storage.all("City").values()
+            return [obj for obj in city_list if obj.state_id == self.state.id]
